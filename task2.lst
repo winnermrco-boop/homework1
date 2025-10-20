@@ -1,0 +1,71 @@
+     1                                  global _start
+     2                                  
+     3                                  section .data
+     4 00000000 6F75747075742E7478-         filename db "output.txt", 0
+     4 00000009 7400               
+     5 0000000B 48656C6C6F20776F72-         message db "Hello world", 10
+     5 00000014 6C640A             
+     6                                      msg_len equ $ - message
+     7 00000017 577269746520737563-         success_msg db "Write success!", 10
+     7 00000020 63657373210A       
+     8                                      success_len equ $ - success_msg
+     9 00000026 4572726F7220777269-         error_msg db "Error writing file!", 10
+     9 0000002F 74696E672066696C65-
+     9 00000038 210A               
+    10                                      error_len equ $ - error_msg
+    11                                  
+    12                                  section .text
+    13                                  _start:
+    14                                     
+    15 00000000 B802000000                  mov rax, 2              
+    16 00000005 48BF-                       mov rdi, filename      
+    16 00000007 [0000000000000000] 
+    17 0000000F BE41000000                  mov rsi, 0o101        
+    18 00000014 BAA4010000                  mov rdx, 0o644          
+    19 00000019 0F05                        syscall
+    20                                  
+    21 0000001B 4883F800                    cmp rax, 0              
+    22 0000001F 7C53                        jl error
+    23                                  
+    24 00000021 4989C0                      mov r8, rax           
+    25                                  
+    26 00000024 B801000000                  mov rax, 1              
+    27 00000029 4C89C7                      mov rdi, r8            
+    28 0000002C 48BE-                       mov rsi, message       
+    28 0000002E [0B00000000000000] 
+    29 00000036 BA0C000000                  mov rdx, msg_len        
+    30 0000003B 0F05                        syscall
+    31                                  
+    32 0000003D 4883F800                    cmp rax, 0             
+    33 00000041 7C31                        jl error
+    34                                  
+    35                                      
+    36 00000043 B803000000                  mov rax, 3              
+    37 00000048 4C89C7                      mov rdi, r8             
+    38 0000004B 0F05                        syscall
+    39                                  
+    40                                     
+    41 0000004D B801000000                  mov rax, 1              
+    42 00000052 BF01000000                  mov rdi, 1              
+    43 00000057 48BE-                       mov rsi, success_msg
+    43 00000059 [1700000000000000] 
+    44 00000061 BA0F000000                  mov rdx, success_len
+    45 00000066 0F05                        syscall
+    46                                  
+    47                                      
+    48 00000068 B83C000000                  mov rax, 60             
+    49 0000006D BF00000000                  mov rdi, 0
+    50 00000072 0F05                        syscall
+    51                                  
+    52                                  error:
+    53                                      
+    54 00000074 B801000000                  mov rax, 1              
+    55 00000079 BF02000000                  mov rdi, 2              
+    56 0000007E 48BE-                       mov rsi, error_msg
+    56 00000080 [2600000000000000] 
+    57 00000088 BA14000000                  mov rdx, error_len
+    58 0000008D 0F05                        syscall
+    59                                  
+    60 0000008F B83C000000                  mov rax, 60            
+    61 00000094 BF01000000                  mov rdi, 1
+    62 00000099 0F05                        syscall
